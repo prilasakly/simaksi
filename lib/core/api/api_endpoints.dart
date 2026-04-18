@@ -36,6 +36,9 @@ class ApiEndpoints {
   // ── Infografis ────────────────────────────────────────────
   static const String infografis = '/api/list/';
 
+  // ──── SDGs ────────────────────────────────────────────────
+  static const String sdgs = '/api/list/';
+
   // ── Indikator / Statistik ─────────────────────────────────
   static const String indikator = '/api/list/model/statictable/lang/ind';
   static const String subjek = '/api/list/model/subject/lang/ind';

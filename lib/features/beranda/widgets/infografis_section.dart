@@ -183,17 +183,17 @@ class _InfografisCard extends StatelessWidget {
                           height: 1.3,
                         ),
                       ),
-                      if (item.kategori != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          item.deskripsi!,
-                          style: TextStyle(
-                            fontFamily: AppTextStyles.fontPrimary,
-                            fontSize: 9,
-                            color: Colors.white.withOpacity(0.75),
-                          ),
-                        ),
-                      ],
+                      // if (item.kategori != null) ...[
+                      //   const SizedBox(height: 4),
+                      //   Text(
+                      //     item.deskripsi!,
+                      //     style: TextStyle(
+                      //       fontFamily: AppTextStyles.fontPrimary,
+                      //       fontSize: 9,
+                      //       color: Colors.white.withOpacity(0.75),
+                      //     ),
+                      //   ),
+                      // ],
                     ],
                   ),
                 ),

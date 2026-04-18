@@ -65,7 +65,7 @@ class _PublikasiSectionState extends State<PublikasiSection> {
   Widget _buildContent() {
     if (_items.isEmpty) return _buildEmpty();
     return SizedBox(
-      height: 210,
+      height: 230,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -77,7 +77,7 @@ class _PublikasiSectionState extends State<PublikasiSection> {
 
   Widget _buildShimmer() {
     return SizedBox(
-      height: 210,
+      height: 230,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),

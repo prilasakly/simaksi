@@ -6,8 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:simaksi/features/sdgs/screen/sdgs_screen.dart' show SdgsScreen;
 import '../../features/splash/splash_screen.dart';
-import '../../features/beranda/screens/beranda_screen.dart';
+import '../../features/beranda/screen/beranda_screen.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -48,6 +49,12 @@ final appRouter = GoRouter(
       builder: (context, state) => const BerandaScreen(),
     ),
 
+    // ── SDGs ────────────────────────────────────────────────
+    GoRoute(
+      path: AppRoutes.sdgs,
+      builder: (context, state) => const SdgsScreen(),
+    ),
+    
     // ── Placeholder routes (implementasi nanti) ─────────────
     GoRoute(
       path: AppRoutes.publikasi,
