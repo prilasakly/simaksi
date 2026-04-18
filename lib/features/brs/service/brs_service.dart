@@ -1,17 +1,18 @@
+// lib/features/brs/service/brs_service.dart
 import 'package:dio/dio.dart';
-import 'package:simaksi/core/api/api_client.dart';
-import 'package:simaksi/core/api/api_endpoints.dart';
-
-import '../model/brs_model.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/api/api_endpoints.dart';
+import '../../../core/models/pagination_model.dart';
 import '../../../core/services/base_service.dart';
+import '../model/brs_model.dart';
 
 class BrsService extends BaseService {
   final Dio _dio = ApiClient.instance;
 
   Future<ApiResult<List<BrsModel>>> getBrs({
-    int? page,
-    int? month,
-    int? year,
+    int page = 1,
+    String? month,
+    String? year,
     String? keyword,
   }) async {
     try {
@@ -21,28 +22,50 @@ class BrsService extends BaseService {
           'model': 'pressrelease',
           'lang': 'ind',
           'domain': '3202',
-          if (page != null) 'page': page,
+          'page': page,
           if (month != null) 'month': month,
           if (year != null) 'year': year,
           if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
-          'key': '36e80d5b1dc35c8127b134a3c6739b2a',
+          'key': ApiEndpoints.apiKey,
         },
       );
 
       final raw = response.data;
+      if (raw['data-availability'] != 'available') return const ApiSuccess([]);
 
-      if (raw['data-availability'] != 'available') {
-        return const ApiSuccess([]);
-      }
-
-      // 🔥 ambil data list sebenarnya
       final List list = raw['data'][1];
-
-      final result = list.map((e) => BrsModel.fromJson(e)).toList();
-
-      return ApiSuccess(result);
+      return ApiSuccess(list.map((e) => BrsModel.fromJson(e)).toList());
     } on DioException catch (e) {
-      return ApiError(e.message ?? 'Gagal load BRS');
+      return ApiError(e.message ?? 'Gagal memuat BRS');
+    }
+  }
+
+  Future<BpsPagination?> getBrsPagination({
+    int page = 1,
+    String? month,
+    String? year,
+    String? keyword,
+  }) async {
+    try {
+      final response = await _dio.get(
+        ApiEndpoints.brs,
+        queryParameters: {
+          'model': 'pressrelease',
+          'lang': 'ind',
+          'domain': '3202',
+          'page': page,
+          if (month != null) 'month': month,
+          if (year != null) 'year': year,
+          if (keyword != null && keyword.isNotEmpty) 'keyword': keyword,
+          'key': ApiEndpoints.apiKey,
+        },
+      );
+
+      final raw = response.data;
+      if (raw['data-availability'] != 'available') return null;
+      return BpsPagination.fromJson(raw['data'][0]);
+    } catch (_) {
+      return null;
     }
   }
 
@@ -55,21 +78,18 @@ class BrsService extends BaseService {
           'lang': 'ind',
           'domain': '3202',
           'id': id,
-          'key': '36e80d5b1dc35c8127b134a3c6739b2a',
+          'key': ApiEndpoints.apiKey,
         },
       );
 
       final raw = response.data;
-
       if (raw['data-availability'] != 'available') {
         return const ApiError('Data tidak tersedia');
       }
 
-      final data = raw['data'];
-
-      return ApiSuccess(BrsModel.fromJson(data));
+      return ApiSuccess(BrsModel.fromJson(raw['data']));
     } on DioException catch (e) {
-      return ApiError(e.message ?? 'Gagal load detail BRS');
+      return ApiError(e.message ?? 'Gagal memuat detail BRS');
     }
   }
 }

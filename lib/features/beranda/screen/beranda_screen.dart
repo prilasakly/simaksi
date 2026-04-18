@@ -75,7 +75,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
                 // ── 4. BRS Section ───────────────────────────
                 BrsSection(
                   onLihatSemua: () =>
-                      Navigator.pushNamed(context, AppRoutes.brs),
+                      context.push(AppRoutes.brs),
                 ),
 
                 const SizedBox(height: 8),

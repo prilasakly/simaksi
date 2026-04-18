@@ -6,6 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:simaksi/features/brs/model/brs_model.dart';
+import 'package:simaksi/features/brs/screen/brs_detail_screen.dart';
+import 'package:simaksi/features/brs/screen/brs_screen.dart';
 import 'package:simaksi/features/sdgs/screen/sdgs_screen.dart' show SdgsScreen;
 import '../../features/splash/splash_screen.dart';
 import '../../features/beranda/screen/beranda_screen.dart';
@@ -40,50 +43,69 @@ final appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   debugLogDiagnostics: false,
   routes: [
-    // ── Splash / Loading ────────────────────────────────────
+    // ── Splash ─────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.splash,
       builder: (context, state) => const SplashScreen(),
     ),
 
-    // ── Beranda ─────────────────────────────────────────────
+    // ── Beranda ────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.beranda,
       builder: (context, state) => const BerandaScreen(),
     ),
 
-    // ── SDGs ────────────────────────────────────────────────
+    // ── SDGs ───────────────────────────────────────────────
     GoRoute(
       path: AppRoutes.sdgs,
       builder: (context, state) => const SdgsScreen(),
     ),
 
-    // ── Publikasi List ───────────────────────────────────────
-    GoRoute(
-      path: AppRoutes.publikasi,
-      builder: (context, state) => const PublikasiScreen(),
-    ),
+    // ======================================================
+    // 🔥 DETAIL ROUTES (WAJIB DI ATAS)
+    // ======================================================
 
-    // ── Publikasi Detail ─────────────────────────────────────
+    // ── Publikasi Detail ───────────────────────────────────
     GoRoute(
-      path: AppRoutes.publikasiDetail,
+      path: AppRoutes.publikasiDetail, // /publikasi/:id
       builder: (context, state) {
         final id = state.pathParameters['id'] ?? '';
-        // extra bisa berupa PublikasiModel dari list screen
         final extra = state.extra;
         final preloaded = extra is PublikasiModel ? extra : null;
         return PublikasiDetailScreen(id: id, preloadedData: preloaded);
       },
     ),
 
-    // ── Placeholder routes (implementasi nanti) ─────────────
+    // ── BRS Detail ─────────────────────────────────────────
     GoRoute(
-      path: AppRoutes.brs,
-      builder: (context, state) => _PlaceholderScreen(
-        title: 'Berita Resmi Statistik',
-        icon: Icons.article_rounded,
-      ),
+      path: AppRoutes.brsDetail, // /brs/:id
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        final extra = state.extra;
+        final preloaded = extra is BrsModel ? extra : null;
+        return BrsDetailScreen(id: id, preloadedData: preloaded);
+      },
     ),
+
+    // ======================================================
+    // 📄 LIST ROUTES (SETELAH DETAIL)
+    // ======================================================
+
+    // ── Publikasi List ─────────────────────────────────────
+    GoRoute(
+      path: AppRoutes.publikasi, // /publikasi
+      builder: (context, state) => const PublikasiScreen(),
+    ),
+
+    // ── BRS List ───────────────────────────────────────────
+    GoRoute(
+      path: AppRoutes.brs, // /brs
+      builder: (context, state) => const BrsScreen(),
+    ),
+
+    // ======================================================
+    // 📦 LAINNYA
+    // ======================================================
     GoRoute(
       path: AppRoutes.infografis,
       builder: (context, state) => _PlaceholderScreen(
