@@ -5,15 +5,15 @@
 // ============================================================
 
 import 'package:flutter/material.dart';
-import '../../widgets/beranda/banner_slider.dart';
-import '../../shared/theme/app_theme.dart';
-import '../../config/app_config.dart';
-import '../../core/router/app_router.dart';
+import '../widgets/banner_slider.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/config/app_config.dart';
+import '../../../core/router/app_router.dart';
 
-import '../../widgets/beranda/brs_section.dart';
-import '../../widgets/beranda/infografis_section.dart';
-import '../../widgets/beranda/publikasi_section.dart';
-import '../../widgets/beranda/sub_menu_grid.dart';
+import '../widgets/brs_section.dart';
+import '../widgets/infografis_section.dart';
+import '../widgets/publikasi_section.dart';
+import '../../../core/widgets/sub_menu_grid.dart';
 
 class BerandaScreen extends StatefulWidget {
   const BerandaScreen({super.key});

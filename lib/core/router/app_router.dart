@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/splash/splash_screen.dart';
-import '../../features/beranda/beranda_screen.dart';
+import '../../features/beranda/screens/beranda_screen.dart';
 
 class AppRoutes {
   AppRoutes._();

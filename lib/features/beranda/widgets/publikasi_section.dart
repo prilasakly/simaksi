@@ -6,12 +6,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:simaksi/widgets/beranda/section_header.dart' show SectionHeader;
-import '../../api/api_client.dart';
-import '../../config/app_config.dart';
-import '../../models/publikasi_model.dart';
-import '../../services/publikasi_service.dart';
-import '../../shared/theme/app_theme.dart';
+import 'package:simaksi/core/widgets/section_header.dart' show SectionHeader;
+import '../../../core/api/api_client.dart';
+import '../../publikasi/model/publikasi_model.dart';
+import '../../publikasi/service/publikasi_service.dart';
+import '../../../core/theme/app_theme.dart';
 
 class PublikasiSection extends StatefulWidget {
   final VoidCallback? onLihatSemua;

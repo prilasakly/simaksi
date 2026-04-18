@@ -7,12 +7,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:simaksi/models/berita_model.dart';
-import 'package:simaksi/services/base_service.dart';
-import '../../api/api_client.dart';
-import '../../config/app_config.dart';
-import '../../services/berita_service.dart';
-import '../../shared/theme/app_theme.dart';
+import 'package:simaksi/features/berita/model/berita_model.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/config/app_config.dart';
+import '../../berita/service/berita_service.dart';
+import '../../../core/theme/app_theme.dart';
 
 class BannerSlider extends StatefulWidget {
   const BannerSlider({super.key});

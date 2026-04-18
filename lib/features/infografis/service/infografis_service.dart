@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:simaksi/api/api_client.dart';
-import 'package:simaksi/api/api_endpoints.dart';
+import 'package:simaksi/core/api/api_client.dart';
+import 'package:simaksi/core/api/api_endpoints.dart';
 
-import '../services/base_service.dart';
-import '../models/infografis_model.dart';
+import '../../../core/services/base_service.dart';
+import '../model/infografis_model.dart';
 
 class InfografisService extends BaseService {
   final Dio _dio = ApiClient.instance;

@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
-import '../../config/app_config.dart';
+import '../config/app_config.dart';
 
 /// Model untuk manifest patch
 class PatchManifest {

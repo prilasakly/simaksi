@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:simaksi/api/api_client.dart';
-import 'package:simaksi/api/api_endpoints.dart';
+import 'package:simaksi/core/api/api_client.dart';
+import 'package:simaksi/core/api/api_endpoints.dart';
 
-import '../models/brs_model.dart';
-import '../services/base_service.dart';
+import '../model/publikasi_model.dart';
+import '../../../core/services/base_service.dart';
 
-class BrsService extends BaseService {
+class PublikasiService extends BaseService {
   final Dio _dio = ApiClient.instance;
 
-  Future<ApiResult<List<BrsModel>>> getBrs({
+  Future<ApiResult<List<PublikasiModel>>> getPublikasi({
     int? page,
     int? month,
     int? year,
@@ -16,9 +16,9 @@ class BrsService extends BaseService {
   }) async {
     try {
       final response = await _dio.get(
-        ApiEndpoints.brs,
+        ApiEndpoints.publikasi,
         queryParameters: {
-          'model': 'pressrelease',
+          'model': 'publication',
           'lang': 'ind',
           'domain': '3202',
           if (page != null) 'page': page,
@@ -35,23 +35,22 @@ class BrsService extends BaseService {
         return const ApiSuccess([]);
       }
 
-      // 🔥 ambil data list sebenarnya
+      // 🔥 ambil list sebenarnya
       final List list = raw['data'][1];
 
-      final result = list.map((e) => BrsModel.fromJson(e)).toList();
+      final result = list.map((e) => PublikasiModel.fromJson(e)).toList();
 
       return ApiSuccess(result);
     } on DioException catch (e) {
-      return ApiError(e.message ?? 'Gagal load BRS');
+      return ApiError(e.message ?? 'Gagal load publikasi');
     }
   }
-
-  Future<ApiResult<BrsModel>> getBrsDetail(String id) async {
+  Future<ApiResult<PublikasiModel>> getPublikasiDetail(String id) async {
     try {
       final response = await _dio.get(
-        ApiEndpoints.brsDetail,
+        ApiEndpoints.publikasiDetail,
         queryParameters: {
-          'model': 'pressrelease',
+          'model': 'publication',
           'lang': 'ind',
           'domain': '3202',
           'id': id,
@@ -65,11 +64,13 @@ class BrsService extends BaseService {
         return const ApiError('Data tidak tersedia');
       }
 
+      // 🔥 biasanya detail langsung object
       final data = raw['data'];
 
-      return ApiSuccess(BrsModel.fromJson(data));
+      return ApiSuccess(PublikasiModel.fromJson(data));
     } on DioException catch (e) {
-      return ApiError(e.message ?? 'Gagal load detail BRS');
+      return ApiError(e.message ?? 'Gagal load detail publikasi');
     }
   }
 }
+

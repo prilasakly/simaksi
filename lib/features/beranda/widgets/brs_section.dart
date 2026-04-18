@@ -6,13 +6,11 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:simaksi/api/api_client.dart' show ApiSuccess;
-import 'package:simaksi/models/brs_model.dart' show BrsModel;
-import 'package:simaksi/services/brs_service.dart' show BrsService;
-import 'package:simaksi/shared/theme/app_theme.dart' show AppColors, AppTextStyles;
-import 'package:simaksi/widgets/beranda/section_header.dart';
+import 'package:simaksi/core/api/api_client.dart' show ApiSuccess;
+import 'package:simaksi/features/brs/model/brs_model.dart' show BrsModel;
+import 'package:simaksi/features/brs/service/brs_service.dart' show BrsService;
+import 'package:simaksi/core/theme/app_theme.dart' show AppColors, AppTextStyles;
+import 'package:simaksi/core/widgets/section_header.dart';
 
 
 class BrsSection extends StatefulWidget {
