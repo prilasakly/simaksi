@@ -1,13 +1,9 @@
-// lib/widgets/beranda/publikasi_section.dart
-// ============================================================
-// SIMAKSI - Publikasi Section
-// Section publikasi vertikal + horizontal scroll di beranda
-// ============================================================
-
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:simaksi/core/widgets/section_header.dart' show SectionHeader;
 import '../../../core/api/api_client.dart';
+import '../../../core/router/app_router.dart';
 import '../../publikasi/model/publikasi_model.dart';
 import '../../publikasi/service/publikasi_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -37,7 +33,6 @@ class _PublikasiSectionState extends State<PublikasiSection> {
       if (result is ApiSuccess<List<PublikasiModel>>) {
         _items = result.data;
       }
-
       _isLoading = false;
     });
   }
@@ -53,7 +48,8 @@ class _PublikasiSectionState extends State<PublikasiSection> {
             title: 'Publikasi',
             subtitle: 'Buku & laporan statistik terbaru',
             accentColor: const Color(0xFF1565C0),
-            onLihatSemua: widget.onLihatSemua,
+            onLihatSemua:
+                widget.onLihatSemua ?? () => context.push(AppRoutes.publikasi),
           ),
           _isLoading ? _buildShimmer() : _buildContent(),
           const SizedBox(height: 16),
@@ -70,7 +66,13 @@ class _PublikasiSectionState extends State<PublikasiSection> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: _items.length,
-        itemBuilder: (context, index) => _PublikasiCard(item: _items[index]),
+        itemBuilder: (context, index) => _PublikasiCard(
+          item: _items[index],
+          onTap: () => context.push(
+            '/publikasi/${_items[index].id}',
+            extra: _items[index],
+          ),
+        ),
       ),
     );
   }
@@ -103,7 +105,8 @@ class _PublikasiSectionState extends State<PublikasiSection> {
 // ── Publikasi Card ───────────────────────────────────────────
 class _PublikasiCard extends StatefulWidget {
   final PublikasiModel item;
-  const _PublikasiCard({required this.item});
+  final VoidCallback onTap;
+  const _PublikasiCard({required this.item, required this.onTap});
 
   @override
   State<_PublikasiCard> createState() => _PublikasiCardState();
@@ -115,9 +118,7 @@ class _PublikasiCardState extends State<_PublikasiCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to publikasi detail
-      },
+      onTap: widget.onTap,
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -240,7 +241,6 @@ class _CoverPlaceholder extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // BPS badge
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 6,

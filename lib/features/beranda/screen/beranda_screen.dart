@@ -5,6 +5,7 @@
 // ============================================================
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/banner_slider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/config/app_config.dart';
@@ -64,8 +65,9 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
                 // ── 3. Publikasi Section ─────────────────────
                 PublikasiSection(
-                  onLihatSemua: () =>
-                      Navigator.pushNamed(context, AppRoutes.publikasi),
+                  onLihatSemua: () {
+                    context.push(AppRoutes.publikasi);
+                  },
                 ),
 
                 const SizedBox(height: 8),

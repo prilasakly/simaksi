@@ -9,6 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:simaksi/features/sdgs/screen/sdgs_screen.dart' show SdgsScreen;
 import '../../features/splash/splash_screen.dart';
 import '../../features/beranda/screen/beranda_screen.dart';
+import '../../features/publikasi/screen/publikasi_screen.dart';
+import '../../features/publikasi/screen/publikasi_detail_screen.dart';
+import '../../features/publikasi/model/publikasi_model.dart';
 
 class AppRoutes {
   AppRoutes._();
@@ -54,13 +57,26 @@ final appRouter = GoRouter(
       path: AppRoutes.sdgs,
       builder: (context, state) => const SdgsScreen(),
     ),
-    
-    // ── Placeholder routes (implementasi nanti) ─────────────
+
+    // ── Publikasi List ───────────────────────────────────────
     GoRoute(
       path: AppRoutes.publikasi,
-      builder: (context, state) =>
-          _PlaceholderScreen(title: 'Publikasi', icon: Icons.menu_book_rounded),
+      builder: (context, state) => const PublikasiScreen(),
     ),
+
+    // ── Publikasi Detail ─────────────────────────────────────
+    GoRoute(
+      path: AppRoutes.publikasiDetail,
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        // extra bisa berupa PublikasiModel dari list screen
+        final extra = state.extra;
+        final preloaded = extra is PublikasiModel ? extra : null;
+        return PublikasiDetailScreen(id: id, preloadedData: preloaded);
+      },
+    ),
+
+    // ── Placeholder routes (implementasi nanti) ─────────────
     GoRoute(
       path: AppRoutes.brs,
       builder: (context, state) => _PlaceholderScreen(
@@ -112,11 +128,6 @@ final appRouter = GoRouter(
       path: AppRoutes.berita,
       builder: (context, state) =>
           _PlaceholderScreen(title: 'Berita', icon: Icons.newspaper_rounded),
-    ),
-    GoRoute(
-      path: AppRoutes.sdgs,
-      builder: (context, state) =>
-          _PlaceholderScreen(title: 'SDGs', icon: Icons.public_rounded),
     ),
   ],
 );
