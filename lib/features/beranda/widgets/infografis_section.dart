@@ -1,19 +1,25 @@
-// lib/widgets/beranda/infografis_section.dart
+// lib/features/beranda/widgets/infografis_section.dart
 // ============================================================
-// SIMAKSI - Infografis Section
-// Grid infografis dengan horizontal scroll
+// SIMAKSI - Infografis Section (Beranda)
+// Widget section horizontal scroll untuk halaman beranda.
+// Menampilkan preview 8 infografis terbaru.
 // ============================================================
 
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:simaksi/core/widgets/section_header.dart' show SectionHeader;
+import 'package:go_router/go_router.dart';
+import 'package:simaksi/core/router/app_router.dart';
+
 import '../../../core/api/api_client.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/section_header.dart';
 import '../../infografis/model/infografis_model.dart';
 import '../../infografis/service/infografis_service.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../infografis/widgets/infografis_card.dart';
+import '../../infografis/widgets/infografis_detail_sheet.dart';
 
 class InfografisSection extends StatefulWidget {
   final VoidCallback? onLihatSemua;
+
   const InfografisSection({super.key, this.onLihatSemua});
 
   @override
@@ -23,6 +29,7 @@ class InfografisSection extends StatefulWidget {
 class _InfografisSectionState extends State<InfografisSection> {
   List<InfografisModel> _items = [];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -31,14 +38,22 @@ class _InfografisSectionState extends State<InfografisSection> {
   }
 
   Future<void> _loadData() async {
-    final result = await InfografisService().getInfografis();
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    final result = await InfografisService().getInfografisForHome(limit: 8);
+
+    if (!mounted) return;
 
     setState(() {
+      _isLoading = false;
       if (result is ApiSuccess<List<InfografisModel>>) {
         _items = result.data;
+      } else if (result is ApiError<List<InfografisModel>>) {
+        _error = result.message;
       }
-
-      _isLoading = false;
     });
   }
 
@@ -51,11 +66,16 @@ class _InfografisSectionState extends State<InfografisSection> {
         children: [
           SectionHeader(
             title: 'Infografis',
-            subtitle: 'Visualisasi data statistik menarik',
-            accentColor: const Color(0xFF6A1B9A),
-            onLihatSemua: widget.onLihatSemua,
+            subtitle: 'Visualisasi data statistik',
+            accentColor: const Color(0xFF4A148C),
+            onLihatSemua:
+                widget.onLihatSemua ?? () => context.push(AppRoutes.infografis),
           ),
-          _isLoading ? _buildShimmer() : _buildContent(),
+          _isLoading
+              ? _buildShimmer()
+              : _error != null
+              ? _buildErrorTile()
+              : _buildContent(),
           const SizedBox(height: 16),
         ],
       ),
@@ -74,213 +94,57 @@ class _InfografisSectionState extends State<InfografisSection> {
         ),
       );
     }
+
     return SizedBox(
-      height: 200,
+      height: 210,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 14),
         itemCount: _items.length,
-        itemBuilder: (context, index) => _InfografisCard(item: _items[index]),
+        itemBuilder: (context, index) => SizedBox(
+          width: 150,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: InfografisCard(
+              item: _items[index],
+              size: InfografisCardSize.small,
+              onTap: () =>
+                  InfografisDetailSheet.show(context, item: _items[index]),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildShimmer() {
     return SizedBox(
-      height: 200,
+      height: 210,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 14),
         itemCount: 5,
-        itemBuilder: (context, _) => const _InfografisCardShimmer(),
-      ),
-    );
-  }
-}
-
-// ── Palette for placeholders ─────────────────────────────────
-const _kPalette = [
-  [Color(0xFF6A1B9A), Color(0xFF4A148C)],
-  [Color(0xFF0277BD), Color(0xFF01579B)],
-  [Color(0xFF2E7D32), Color(0xFF1B5E20)],
-  [Color(0xFFBF360C), Color(0xFF870000)],
-  [Color(0xFF00695C), Color(0xFF004D40)],
-  [Color(0xFF1565C0), Color(0xFF0D47A1)],
-];
-
-// ── Infografis Card ──────────────────────────────────────────
-class _InfografisCard extends StatelessWidget {
-  final InfografisModel item;
-  const _InfografisCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final paletteIndex = item.id.hashCode % _kPalette.length;
-    final colors = _kPalette[paletteIndex.abs()];
-
-    return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to infografis detail / full screen view
-      },
-      child: Container(
-        width: 155,
-        margin: const EdgeInsets.only(right: 12, bottom: 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: colors[0].withOpacity(0.25),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // Image or placeholder
-              item.gambar != null
-                  ? CachedNetworkImage(
-                      imageUrl: item.gambar!,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) =>
-                          _InfografisPlaceholder(colors: colors, item: item),
-                    )
-                  : _InfografisPlaceholder(colors: colors, item: item),
-
-              // Bottom gradient
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.7),
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        item.judul,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: AppTextStyles.fontPrimary,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          height: 1.3,
-                        ),
-                      ),
-                      // if (item.kategori != null) ...[
-                      //   const SizedBox(height: 4),
-                      //   Text(
-                      //     item.deskripsi!,
-                      //     style: TextStyle(
-                      //       fontFamily: AppTextStyles.fontPrimary,
-                      //       fontSize: 9,
-                      //       color: Colors.white.withOpacity(0.75),
-                      //     ),
-                      //   ),
-                      // ],
-                    ],
-                  ),
-                ),
-              ),
-            ],
+        itemBuilder: (_, __) => const SizedBox(
+          width: 150,
+          child: Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: InfografisCardShimmer(size: InfografisCardSize.small),
           ),
         ),
       ),
     );
   }
-}
 
-class _InfografisPlaceholder extends StatelessWidget {
-  final List<Color> colors;
-  final InfografisModel item;
-
-  const _InfografisPlaceholder({required this.colors, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
+  Widget _buildErrorTile() {
+    return SizedBox(
+      height: 80,
+      child: Center(
+        child: TextButton.icon(
+          onPressed: _loadData,
+          icon: const Icon(Icons.refresh_rounded, size: 16),
+          label: const Text('Gagal memuat, ketuk untuk coba lagi'),
+          style: TextButton.styleFrom(foregroundColor: AppColors.primary),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.07),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.bar_chart_rounded,
-                  size: 40,
-                  color: Colors.white.withOpacity(0.4),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    item.judul,
-                    textAlign: TextAlign.center,
-                    maxLines: 3,
-                    style: const TextStyle(
-                      fontFamily: AppTextStyles.fontPrimary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfografisCardShimmer extends StatelessWidget {
-  const _InfografisCardShimmer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 155,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(16),
       ),
     );
   }

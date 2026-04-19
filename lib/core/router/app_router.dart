@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:simaksi/features/brs/model/brs_model.dart';
 import 'package:simaksi/features/brs/screen/brs_detail_screen.dart';
 import 'package:simaksi/features/brs/screen/brs_screen.dart';
+import 'package:simaksi/features/infografis/screen/infografis_screen.dart';
 import 'package:simaksi/features/sdgs/screen/sdgs_screen.dart' show SdgsScreen;
 import '../../features/splash/splash_screen.dart';
 import '../../features/beranda/screen/beranda_screen.dart';
@@ -103,16 +104,14 @@ final appRouter = GoRouter(
       builder: (context, state) => const BrsScreen(),
     ),
 
+    GoRoute(
+      path: AppRoutes.infografis,
+      builder: (context, state) => const InfografisScreen(),
+    ),
+
     // ======================================================
     // 📦 LAINNYA
     // ======================================================
-    GoRoute(
-      path: AppRoutes.infografis,
-      builder: (context, state) => _PlaceholderScreen(
-        title: 'Infografis',
-        icon: Icons.bar_chart_rounded,
-      ),
-    ),
     GoRoute(
       path: AppRoutes.mediaSosial,
       builder: (context, state) =>

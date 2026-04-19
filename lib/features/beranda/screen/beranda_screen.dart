@@ -83,7 +83,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
                 // ── 5. Infografis Section ────────────────────
                 InfografisSection(
                   onLihatSemua: () =>
-                      Navigator.pushNamed(context, AppRoutes.infografis),
+                      context.push(AppRoutes.infografis),
                 ),
 
                 const SizedBox(height: 8),
