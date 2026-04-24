@@ -11,6 +11,7 @@ import 'package:simaksi/features/brs/screen/brs_detail_screen.dart';
 import 'package:simaksi/features/brs/screen/brs_screen.dart';
 import 'package:simaksi/features/infografis/screen/infografis_screen.dart';
 import 'package:simaksi/features/sdgs/screen/sdgs_screen.dart' show SdgsScreen;
+import '../../features/media_sosial/screen/media_sosial_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/beranda/screen/beranda_screen.dart';
 import '../../features/publikasi/screen/publikasi_screen.dart';
@@ -114,8 +115,7 @@ final appRouter = GoRouter(
     // ======================================================
     GoRoute(
       path: AppRoutes.mediaSosial,
-      builder: (context, state) =>
-          _PlaceholderScreen(title: 'Media Sosial', icon: Icons.share_rounded),
+      builder: (context, state) => const MediaSosialScreen(),
     ),
     GoRoute(
       path: AppRoutes.indikator,

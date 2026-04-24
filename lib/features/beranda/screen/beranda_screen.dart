@@ -100,22 +100,91 @@ class _BerandaScreenState extends State<BerandaScreen> {
 }
 
 // ── AppBar ───────────────────────────────────────────────────
-class _BerandaAppBar extends StatelessWidget {
+class _BerandaAppBar extends StatefulWidget {
   final bool innerBoxIsScrolled;
   const _BerandaAppBar({required this.innerBoxIsScrolled});
 
   @override
+  State<_BerandaAppBar> createState() => _BerandaAppBarState();
+}
+
+class _BerandaAppBarState extends State<_BerandaAppBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      floating: false,
-      expandedHeight: 0,
-      elevation: innerBoxIsScrolled ? 2 : 0,
-      shadowColor: AppColors.cardShadow,
-      backgroundColor: AppColors.primary,
-      title: Row(
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return SliverAppBar(
+          pinned: true,
+          floating: false,
+          expandedHeight: 0,
+          elevation: widget.innerBoxIsScrolled ? 4 : 0,
+          shadowColor: AppColors.cardShadow,
+          backgroundColor: Colors.transparent,
+
+          // 🎨 BACKGROUND CUSTOM (GRADIENT + ANIMATED BUBBLES)
+          flexibleSpace: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Gradient
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primary, AppColors.primaryLight],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+
+              // Animated bubble pattern
+              CustomPaint(
+                painter: HeaderPatternPainter(animValue: _controller.value),
+              ),
+            ],
+          ),
+
+          // ── TITLE ─────────────────────────────────────
+          title: child,
+
+          // ── ACTIONS ───────────────────────────────────
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search_rounded, color: Colors.white),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () {},
+            ),
+          ],
+        );
+      },
+
+      // Title dipisah sebagai child agar tidak rebuild tiap frame animasi
+      child: Row(
         children: [
-          // Mini BPS logo
           Container(
             width: 34,
             height: 34,
@@ -166,20 +235,6 @@ class _BerandaAppBar extends StatelessWidget {
           ),
         ],
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search_rounded, color: Colors.white),
-          onPressed: () {
-            // TODO: Implementasi search
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-          onPressed: () {
-            // TODO: Implementasi notifikasi
-          },
-        ),
-      ],
     );
   }
 }

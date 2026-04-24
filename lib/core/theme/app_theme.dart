@@ -4,6 +4,8 @@
 // Ubah warna, font, dan style di sini secara terpusat
 // ============================================================
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -208,6 +210,163 @@ class AppTheme {
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: AppColors.background,
             ),
+    );
+  }
+}
+
+class BubbleData {
+  final double x, y, radius, opacity, driftX, driftY, phase;
+  const BubbleData({
+    required this.x,
+    required this.y,
+    required this.radius,
+    required this.opacity,
+    required this.driftX,
+    required this.driftY,
+    required this.phase,
+  });
+}
+
+class HeaderPatternPainter extends CustomPainter {
+  final double animValue;
+
+  static const _bubbles = [
+    BubbleData(
+      x: -0.05,
+      y: -0.1,
+      radius: 55,
+      opacity: 0.10,
+      driftX: 6,
+      driftY: 10,
+      phase: 0.0,
+    ),
+    BubbleData(
+      x: 0.15,
+      y: 0.6,
+      radius: 38,
+      opacity: 0.08,
+      driftX: 8,
+      driftY: 12,
+      phase: 1.2,
+    ),
+    BubbleData(
+      x: 0.35,
+      y: -0.2,
+      radius: 70,
+      opacity: 0.07,
+      driftX: 5,
+      driftY: 8,
+      phase: 2.5,
+    ),
+    BubbleData(
+      x: 0.55,
+      y: 0.8,
+      radius: 30,
+      opacity: 0.12,
+      driftX: 10,
+      driftY: 6,
+      phase: 0.8,
+    ),
+    BubbleData(
+      x: 0.65,
+      y: 0.1,
+      radius: 50,
+      opacity: 0.09,
+      driftX: 7,
+      driftY: 14,
+      phase: 3.1,
+    ),
+    BubbleData(
+      x: 0.85,
+      y: 0.5,
+      radius: 65,
+      opacity: 0.08,
+      driftX: 6,
+      driftY: 10,
+      phase: 1.8,
+    ),
+    BubbleData(
+      x: 1.0,
+      y: -0.1,
+      radius: 42,
+      opacity: 0.10,
+      driftX: 9,
+      driftY: 7,
+      phase: 4.2,
+    ),
+    BubbleData(
+      x: 0.45,
+      y: 0.3,
+      radius: 25,
+      opacity: 0.13,
+      driftX: 4,
+      driftY: 9,
+      phase: 5.0,
+    ),
+  ];
+
+  const HeaderPatternPainter({required this.animValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final b in _bubbles) {
+      final paint = Paint()
+        ..color = Colors.white.withOpacity(b.opacity)
+        ..style = PaintingStyle.fill;
+
+      final dx = sin(animValue * 2 * pi + b.phase) * b.driftX;
+      final dy = cos(animValue * 2 * pi * 0.7 + b.phase) * b.driftY;
+
+      canvas.drawCircle(
+        Offset(b.x * size.width + dx, b.y * size.height + dy),
+        b.radius,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(HeaderPatternPainter old) => old.animValue != animValue;
+}
+
+// ─── AnimatedHeaderPattern (tidak dipakai di beranda_screen, tapi tetap tersedia) ───
+class AnimatedHeaderPattern extends StatefulWidget {
+  final Widget child;
+  const AnimatedHeaderPattern({super.key, required this.child});
+
+  @override
+  State<AnimatedHeaderPattern> createState() => _AnimatedHeaderPatternState();
+}
+
+class _AnimatedHeaderPatternState extends State<AnimatedHeaderPattern>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: HeaderPatternPainter(animValue: _controller.value),
+          child: widget.child,
+        );
+      },
     );
   }
 }
